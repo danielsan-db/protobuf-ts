@@ -63,6 +63,23 @@ module.exports.listInstalled = function listInstalled(installDir = standardInsta
         let includePath = path.join(abs, "include/")
         entries.push({name, version, protocPath, includePath});
     }
+
+    const protocInstallPath = process.env.PROTOC_INSTALL_PATH;
+
+    if (fs.existsSync(protocInstallPath)) {
+        const name = path.basename(protocInstallPath);
+        if (!name.startsWith("protoc-")) {
+            return entries;
+        }
+        const version = name.split("-")[1];
+        let protocPath = path.join(protocInstallPath, "bin/protoc.exe");
+        if (!fs.existsSync(protocPath)) {
+            protocPath = path.join(protocInstallPath, "bin/protoc");
+        }
+        let includePath = path.join(protocInstallPath, "include/")
+        entries.push({name, version, protocPath, includePath});
+    }
+
     return entries;
 };
 
